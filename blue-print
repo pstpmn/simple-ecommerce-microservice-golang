@@ -1,0 +1,90 @@
+service:
+    auth:
+        db: mysql
+    customer:
+        db: postgres 
+    order:
+        db: mongo 
+    product:
+        db: mysql 
+
+design-db:
+    authService:
+        auth:
+            authId
+            customerId
+            username
+            password
+            email
+            lastLoggedInAt
+            createdAt
+        access_log:
+            logId
+            authId
+            action
+            createdAt
+
+    customerService:
+        customers:
+            customerId
+            firstName
+            lastName
+            dob
+            phoneNo
+            status
+            updatedAt
+            createdAt
+        addresses:
+            addressId
+            customerId
+            street_address
+            city
+            state
+            postal_codes
+
+    productService:
+        products:
+            productId
+            productName
+            description
+            price
+            stock_quantity
+            categoryId
+            createdAt
+            updatedAt
+        categories:
+            categoryId
+            category_name
+    orderService:
+        orders:
+            orderId
+            customerId
+            orderDate
+            totalAmount
+            status
+            shippingAddress
+            createdAt
+            updatedAt
+
+        order_details:
+            orderDetailId
+            orderId
+            productId
+            quantity
+            price
+
+feature : 
+    auth-service:
+        - login
+        - loggout
+        - registration
+    customer-service:
+        - get profile
+        - order history
+    product-service:
+        - get all product
+        - get product detail
+    order-service:
+        - cancel order
+        - create order
+        - get order detail
