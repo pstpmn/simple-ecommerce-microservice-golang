@@ -6,7 +6,7 @@ service:
     order:
         db: mongo 
     product:
-        db: mysql 
+        db: postgres 
 
 design-db:
     authService:
