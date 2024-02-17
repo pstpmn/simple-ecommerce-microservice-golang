@@ -1,6 +1,7 @@
 package product
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	productCore "simple-ecomerce-microservice/services/product/core"
@@ -16,7 +17,7 @@ type (
 )
 
 // UpdateOne implements productCore.IProductRepo.
-func (ob *repo) UpdateOne(model productModel.ProductModel) error {
+func (ob *repo) UpdateOne(pctx context.Context, model productModel.ProductModel) error {
 	if err := ob.
 		db.
 		Model(&model).
@@ -30,7 +31,7 @@ func (ob *repo) UpdateOne(model productModel.ProductModel) error {
 }
 
 // FindProduct implements productCore.IProductRepo.
-func (ob *repo) FindProduct(productId string) (productModel.ProductModel, error) {
+func (ob *repo) FindProduct(pctx context.Context, productId string) (productModel.ProductModel, error) {
 	var model productModel.ProductModel
 	err := ob.
 		db.
@@ -47,7 +48,7 @@ func (ob *repo) FindProduct(productId string) (productModel.ProductModel, error)
 }
 
 // FindProducts implements productCore.IProductRepo.
-func (ob *repo) FindProducts() ([]productModel.ProductModel, error) {
+func (ob *repo) FindProducts(pctx context.Context) ([]productModel.ProductModel, error) {
 	var model []productModel.ProductModel
 	err := ob.
 		db.

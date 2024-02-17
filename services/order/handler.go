@@ -1,5 +1,1 @@
-package product
-
-func Handler() {
-	return
-}
+package order

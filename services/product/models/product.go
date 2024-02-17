@@ -3,7 +3,7 @@ package productModel
 import "time"
 
 type ProductModel struct {
-	ProductId   string        `json:"productId" gorm:"index;not null"`
+	ProductId   string        `json:"productId" gorm:"primaryKey;not null"`
 	ProductName string        `json:"productName"`
 	Description string        `json:"description"`
 	Price       float64       `json:"price"`
@@ -15,5 +15,5 @@ type ProductModel struct {
 }
 
 func (ProductModel) TableName() string {
-	return "orderDetails"
+	return "products"
 }
