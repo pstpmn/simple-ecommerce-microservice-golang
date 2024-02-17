@@ -24,6 +24,7 @@ func (ob *u) customerModelToDomain(model customerModel.CustomerModel) Customer {
 		CreatedAt: model.CreatedAt,
 	}
 }
+
 func (ob *u) customerModelToCustomerProfileDomain(model customerModel.CustomerModel) CustomerProfile {
 	var addressList []Address
 	for _, v := range model.Addresses {

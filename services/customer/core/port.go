@@ -19,6 +19,13 @@ type ICustomerRepo interface {
 	FindCustomers() ([]customerModel.CustomerModel, error)
 }
 
+// type ICustomerHttpHandler interface {
+// }
+
+// type ICustomerGrpcHandler interface {
+// 	mustEmbedUnimplementedGreeterServer()
+// }
+
 type IHelper interface {
 	GenUuid() string
 }
