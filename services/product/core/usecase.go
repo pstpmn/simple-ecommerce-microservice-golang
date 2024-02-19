@@ -1,7 +1,9 @@
 package productCore
 
 import (
+	"context"
 	"errors"
+	"fmt"
 	productModel "simple-ecomerce-microservice/services/product/models"
 )
 
@@ -13,12 +15,12 @@ type (
 )
 
 // StockManager implements IProductUseCase.
-func (ob *usecase) StockManager(productId string, topic string, amount int64) (*ProductProfile, error) {
+func (ob *usecase) StockManager(pctx context.Context, productId string, topic string, amount int64) (*ProductProfile, error) {
 	if amount == 0 || amount < 0 {
 		return nil, errors.New("amount stock don't less than or equal to zero value")
 	}
 
-	prod, err := ob.repo.FindProduct(productId)
+	prod, err := ob.repo.FindProduct(pctx, productId)
 	if err != nil {
 		return nil, err
 	}
@@ -31,6 +33,7 @@ func (ob *usecase) StockManager(productId string, topic string, amount int64) (*
 		prod.Stock += amount
 	case "sub":
 		prod.Stock -= amount
+		fmt.Println(prod.Stock)
 		if prod.Stock < 0 {
 			return nil, errors.New("subtrack don't less then zero value")
 		}
@@ -40,14 +43,14 @@ func (ob *usecase) StockManager(productId string, topic string, amount int64) (*
 		return nil, errors.New("invalid topic can't manage stock")
 	}
 
-	err = ob.repo.UpdateOne(prod)
+	err = ob.repo.UpdateOne(pctx, prod)
 	domain := ob.productToDomain(prod)
 	return &domain, err
 }
 
 // DecreseStock implements IProductUseCase.
-func (ob *usecase) DecreseStock(productId string, amountDecrese int64) (*ProductProfile, error) {
-	prod, err := ob.repo.FindProduct(productId)
+func (ob *usecase) DecreseStock(pctx context.Context, productId string, amountDecrese int64) (*ProductProfile, error) {
+	prod, err := ob.repo.FindProduct(pctx, productId)
 	if err != nil {
 		return nil, err
 	}
@@ -56,17 +59,17 @@ func (ob *usecase) DecreseStock(productId string, amountDecrese int64) (*Product
 	}
 
 	prod.Stock -= amountDecrese
-	err = ob.repo.UpdateOne(prod)
+	err = ob.repo.UpdateOne(pctx, prod)
 	domain := ob.productToDomain(prod)
 	return &domain, err
 }
 
-func (ob *usecase) IncreseStock(productId string, amountIncrese int64) (*ProductProfile, error) {
+func (ob *usecase) IncreseStock(pctx context.Context, productId string, amountIncrese int64) (*ProductProfile, error) {
 	if amountIncrese == 0 {
 		return nil, errors.New("amount stock don't zero value")
 	}
 
-	prod, err := ob.repo.FindProduct(productId)
+	prod, err := ob.repo.FindProduct(pctx, productId)
 	if err != nil {
 		return nil, err
 	}
@@ -75,7 +78,7 @@ func (ob *usecase) IncreseStock(productId string, amountIncrese int64) (*Product
 	}
 
 	prod.Stock += amountIncrese
-	err = ob.repo.UpdateOne(prod)
+	err = ob.repo.UpdateOne(pctx, prod)
 	domain := ob.productToDomain(prod)
 	return &domain, err
 }
@@ -110,8 +113,8 @@ func (*usecase) productsToProductIntroductuinDomain(products []productModel.Prod
 }
 
 // GetProductDetail implements IProductUseCase.
-func (ob *usecase) GetProductDetail(productId string) (*ProductProfile, error) {
-	prod, err := ob.repo.FindProduct(productId)
+func (ob *usecase) GetProductDetail(pctx context.Context, productId string) (*ProductProfile, error) {
+	prod, err := ob.repo.FindProduct(pctx, productId)
 	if err != nil {
 		return nil, err
 	}
@@ -124,8 +127,8 @@ func (ob *usecase) GetProductDetail(productId string) (*ProductProfile, error) {
 }
 
 // GetProducts implements IProductUseCase.
-func (ob *usecase) GetProducts() (*[]ProductIntroduction, error) {
-	prod, err := ob.repo.FindProducts()
+func (ob *usecase) GetProducts(pctx context.Context) (*[]ProductIntroduction, error) {
+	prod, err := ob.repo.FindProducts(pctx)
 	domain := ob.productsToProductIntroductuinDomain(prod)
 	return &domain, err
 }

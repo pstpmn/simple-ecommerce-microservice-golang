@@ -24,6 +24,9 @@ func (ob *repo) FindCustomer(customerId string) (customerModel.CustomerModel, er
 		Preload("Addresses").
 		First(&model).
 		Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		err = nil
+	}
 	return model, err
 }
 

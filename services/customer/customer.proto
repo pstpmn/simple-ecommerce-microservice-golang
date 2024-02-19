@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+option go_package = "/customerPb";
+
+message VerifyCustomerReq {
+    string customerId = 1;
+}
+
+message VerifyCustomerRes {
+    bool isValid = 1;
+}
+
+service CustomerService {
+    rpc VerifyCustomer(VerifyCustomerReq) returns (VerifyCustomerRes);
+}
