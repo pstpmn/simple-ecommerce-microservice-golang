@@ -24,5 +24,5 @@ type Address struct {
 
 type CustomerProfile struct {
 	*Customer
-	Address []Address
+	Address []Address `json:"addresses"`
 }
