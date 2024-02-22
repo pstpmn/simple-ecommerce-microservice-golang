@@ -1,0 +1,13 @@
+app:
+  name: Customer-Service
+  httpProt: 0.0.0.0:12654
+  grpcProt: 0.0.0.0:12655
+
+mongoDb:
+  uri: 
+
+postgresDb:
+  uri: postgresql://postgres:root@localhost:5432/customer?sslmode=disable&TimeZone=Asia/Bangkok
+
+redis:
+  uri: redis://localhost:6379

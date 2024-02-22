@@ -3,6 +3,8 @@ package customerCore
 import (
 	customerModel "simple-ecomerce-microservice/services/customer/models"
 	"time"
+
+	"github.com/labstack/echo/v4"
 )
 
 type ICustomerUseCase interface {
@@ -28,4 +30,9 @@ type ICustomerRepo interface {
 
 type IHelper interface {
 	GenUuid() string
+}
+
+type IResponse interface {
+	Error(statusCode int, message string, ctx echo.Context) error
+	Success(statusCode int, message string, result any, ctx echo.Context) error
 }
