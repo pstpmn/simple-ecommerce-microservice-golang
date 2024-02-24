@@ -16,7 +16,7 @@ func Test_u_CreateOrder(t *testing.T) {
 	mongo := pkg.NewMongo()
 	helper := pkg.NewHelper()
 	grpc := pkg.NewGrpc()
-	conn, err := mongo.Connect("localhost", "root", "root", 27017)
+	conn, err := mongo.Connect("mongodb://root:root@localhost:27017")
 	if err != nil {
 		panic(fmt.Sprintf("error mongo: %s", err))
 	}
@@ -148,7 +148,7 @@ func Test_u_CancelOrder(t *testing.T) {
 	mongo := pkg.NewMongo()
 	helper := pkg.NewHelper()
 	grpc := pkg.NewGrpc()
-	conn, err := mongo.Connect("localhost", "root", "root", 27017)
+	conn, err := mongo.Connect("mongodb://root:root@localhost:27017")
 	if err != nil {
 		panic(fmt.Sprintf("error mongo: %s", err))
 	}
@@ -220,7 +220,7 @@ func Test_u_GetOrderDetail(t *testing.T) {
 	mongo := pkg.NewMongo()
 	helper := pkg.NewHelper()
 	grpc := pkg.NewGrpc()
-	conn, err := mongo.Connect("localhost", "root", "root", 27017)
+	conn, err := mongo.Connect("mongodb://root:root@localhost:27017")
 	if err != nil {
 		panic(fmt.Sprintf("error mongo: %s", err))
 	}

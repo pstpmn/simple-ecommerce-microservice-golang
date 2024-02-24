@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"simple-ecomerce-microservice/config"
 	custPb "simple-ecomerce-microservice/services/customer/customerPb"
 	orderModel "simple-ecomerce-microservice/services/order/models"
 	prodPb "simple-ecomerce-microservice/services/product/productPb"
@@ -16,6 +17,7 @@ type (
 	u struct {
 		repo   IOrderRepo
 		helper IHelper
+		config config.Config
 	}
 )
 
@@ -62,11 +64,9 @@ func (ob *u) CreateOrder(pctx context.Context, customerId string, products []Ord
 	// save order
 	// save product
 	// -> end flow <-
-	const urlGrpcCust = "localhost:11111"
-	const urlGrpcProd = "localhost:11112"
 
 	// verify customer
-	if isValid, err := ob.repo.VerifyCustomerById(pctx, urlGrpcCust, &custPb.VerifyCustomerReq{
+	if isValid, err := ob.repo.VerifyCustomerById(pctx, ob.config.Grpc.Customer, &custPb.VerifyCustomerReq{
 		CustomerId: customerId,
 	}); err != nil {
 		return nil, err
@@ -76,7 +76,7 @@ func (ob *u) CreateOrder(pctx context.Context, customerId string, products []Ord
 
 	// validate product
 	for _, v := range products {
-		prod, err := ob.repo.GetProductDetail(pctx, urlGrpcProd, &prodPb.ProductId{
+		prod, err := ob.repo.GetProductDetail(pctx, ob.config.Grpc.Product, &prodPb.ProductId{
 			ProductId: v.ProductId,
 		})
 		if err != nil {
@@ -87,7 +87,7 @@ func (ob *u) CreateOrder(pctx context.Context, customerId string, products []Ord
 		}
 
 		// decrease product in stockc
-		_, err = ob.repo.StockManager(pctx, urlGrpcProd, &prodPb.StockManagerReq{
+		_, err = ob.repo.StockManager(pctx, ob.config.Grpc.Product, &prodPb.StockManagerReq{
 			ProductId: v.ProductId,
 			Topic:     "sub",
 			Amount:    int64(v.Quantity),
@@ -127,17 +127,8 @@ func (ob *u) CreateOrder(pctx context.Context, customerId string, products []Ord
 	return &domain, err
 }
 
-// CreateOrderDetails implements IOrderUseCase.
-func (*u) CreateOrderDetails(pctx context.Context, order []OrderDetail) (*OrderProfile, error) {
-	panic("unimplemented")
-}
 func (ob *u) CancelOrder(pctx context.Context, customerId string, orderId primitive.ObjectID) error {
-	const (
-		urlGrpcCust = "localhost:11111"
-		urlGrpcProd = "localhost:11112"
-	)
-
-	if _, err := ob.repo.VerifyCustomerById(pctx, urlGrpcCust, &custPb.VerifyCustomerReq{CustomerId: customerId}); err != nil {
+	if _, err := ob.repo.VerifyCustomerById(pctx, ob.config.Grpc.Customer, &custPb.VerifyCustomerReq{CustomerId: customerId}); err != nil {
 		return err
 	}
 
@@ -162,7 +153,7 @@ func (ob *u) CancelOrder(pctx context.Context, customerId string, orderId primit
 	}
 
 	for _, detail := range detailsInOrder {
-		_, err := ob.repo.StockManager(pctx, urlGrpcProd, &prodPb.StockManagerReq{
+		_, err := ob.repo.StockManager(pctx, ob.config.Grpc.Product, &prodPb.StockManagerReq{
 			ProductId: detail.ProductId,
 			Topic:     "add",
 			Amount:    int64(detail.Quantity),
@@ -196,9 +187,10 @@ func (ob *u) GetOrderDetail(pctx context.Context, orderId primitive.ObjectID) (p
 	return profile, nil
 }
 
-func NewUseCase(repo IOrderRepo, helper IHelper) IOrderUseCase {
+func NewUseCase(repo IOrderRepo, helper IHelper, config config.Config) IOrderUseCase {
 	return &u{
 		repo:   repo,
 		helper: helper,
+		config: config,
 	}
 }

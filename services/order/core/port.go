@@ -7,6 +7,7 @@ import (
 	orderModel "simple-ecomerce-microservice/services/order/models"
 	prodPb "simple-ecomerce-microservice/services/product/productPb"
 
+	echo "github.com/labstack/echo/v4"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"google.golang.org/grpc"
 )
@@ -14,7 +15,6 @@ import (
 type IOrderUseCase interface {
 	GetOrderDetail(pctx context.Context, orderId primitive.ObjectID) (*OrderProfile, error)
 	CreateOrder(pctx context.Context, customerId string, order []OrderDetail) (*OrderProfile, error)
-	CreateOrderDetails(pctx context.Context, order []OrderDetail) (*OrderProfile, error)
 	CancelOrder(pctx context.Context, customerId string, orderId primitive.ObjectID) error
 }
 
@@ -33,10 +33,16 @@ type IOrderRepo interface {
 }
 
 type IHelper interface {
+	ConvertStrToPrimitiveObjectId(value string, target *primitive.ObjectID) error
 	GenUuid() string
 }
 
 type IGrpc interface {
 	Server(key, host string) (*grpc.Server, net.Listener)
 	Client(host string) (*grpc.ClientConn, error)
+}
+
+type IResponse interface {
+	Error(statusCode int, message string, ctx echo.Context) error
+	Success(statusCode int, message string, result any, ctx echo.Context) error
 }

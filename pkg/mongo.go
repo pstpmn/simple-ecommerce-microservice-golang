@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"context"
-	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -11,7 +10,7 @@ import (
 )
 
 type IMongoDb interface {
-	Connect(host string, user string, pass string, port int) (*mongo.Client, error)
+	Connect(uri string) (*mongo.Client, error)
 	Ping(client mongo.Client) error
 }
 type m struct {
@@ -21,8 +20,7 @@ func NewMongo() IMongoDb {
 	return &m{}
 }
 
-func (m m) Connect(host string, user string, pass string, port int) (*mongo.Client, error) {
-	uri := fmt.Sprintf("mongodb://%s:%s@%s:%d", user, pass, host, port)
+func (m m) Connect(uri string) (*mongo.Client, error) {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(uri).SetServerAPIOptions(serverAPI)
 	// Create a new client and connect to the server
