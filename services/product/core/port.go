@@ -3,6 +3,8 @@ package productCore
 import (
 	"context"
 	productModel "simple-ecomerce-microservice/services/product/models"
+
+	"github.com/labstack/echo/v4"
 )
 
 type IProductUseCase interface {
@@ -22,4 +24,8 @@ type IProductRepo interface {
 
 type IHelper interface {
 	GenUuid() string
+}
+type IResponse interface {
+	Error(statusCode int, message string, ctx echo.Context) error
+	Success(statusCode int, message string, result any, ctx echo.Context) error
 }
